@@ -33,6 +33,22 @@ install_deps() {
 sync_repo() {
     if [ -d "$INSTALL_DIR/.git" ]; then
         say "Updating existing install at $INSTALL_DIR"
+
+        # -c core.fileMode=false: our own `chmod +x` below marks every .sh as
+        # mode-changed in git's eyes; without this every update would falsely
+        # treat that as a local edit and back the file up for no reason.
+        local changed
+        changed=$(git -C "$INSTALL_DIR" -c core.fileMode=false diff --name-only)
+        if [ -n "$changed" ]; then
+            local ts
+            ts=$(date +%Y%m%d_%H%M%S)
+            while IFS= read -r f; do
+                cp "$INSTALL_DIR/$f" "$INSTALL_DIR/${f}.bak_${ts}"
+                warn "Local change in $f — backed up to ${f}.bak_${ts} before updating"
+            done <<< "$changed"
+            git -C "$INSTALL_DIR" checkout -- .
+        fi
+
         git -C "$INSTALL_DIR" pull --ff-only
     elif [ -e "$INSTALL_DIR" ]; then
         local backup="${INSTALL_DIR}_backup_$(date +%Y%m%d_%H%M%S)"
