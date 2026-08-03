@@ -35,7 +35,11 @@ sync_repo() {
         say "Updating existing install at $INSTALL_DIR"
         git -C "$INSTALL_DIR" pull --ff-only
     elif [ -e "$INSTALL_DIR" ]; then
-        die "$INSTALL_DIR exists but is not a git clone. Move it aside and re-run."
+        local backup="${INSTALL_DIR}_backup_$(date +%Y%m%d_%H%M%S)"
+        warn "$INSTALL_DIR exists but is not a git clone — moving it to $backup"
+        mv "$INSTALL_DIR" "$backup"
+        say "Cloning into $INSTALL_DIR"
+        git clone "$REPO_URL" "$INSTALL_DIR"
     else
         say "Cloning into $INSTALL_DIR"
         git clone "$REPO_URL" "$INSTALL_DIR"
