@@ -1,0 +1,21 @@
+# This repo intentionally tracks only what menu.sh actually launches, plus
+# install.sh and its own dependencies. Everything else in this working
+# directory is local scratch/experiments and is deliberately not shared.
+*
+
+!/.gitignore
+!/README.md
+!/menu.sh
+!/install.sh
+!/common.sh
+!/grouprm_project_finder.sh
+!/code_grouprm_project.sh
+!/config_manager.sh
+!/database_switch.sh
+!/grouprm_project_dir_configuration.sh
+!/kdesvn.sh
+!/launch_grouprm_project.sh
+!/pack_setup.sh
+!/query_file_dir_open.sh
+!/svn_checkout.sh
+!/svn_up.sh
